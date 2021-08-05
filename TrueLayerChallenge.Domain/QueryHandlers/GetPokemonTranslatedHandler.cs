@@ -32,7 +32,7 @@ namespace TrueLayerChallenge.Domain.QueryHandlers
 
             if (cachedPokemon != null && string.IsNullOrWhiteSpace(cachedPokemon.TranslatedDescription))
             {
-                if (cachedPokemon.Habitat.Equals("cave", StringComparison.OrdinalIgnoreCase) || cachedPokemon.IsLegendary)
+                if ((!string.IsNullOrWhiteSpace(cachedPokemon.Habitat) && cachedPokemon.Habitat.Equals("cave", StringComparison.OrdinalIgnoreCase)) || cachedPokemon.IsLegendary)
                 {
                     cachedPokemon.TranslatedDescription = await _translateService.GetYodaTranslationAsync(cachedPokemon.StandardDescription);
                 }
