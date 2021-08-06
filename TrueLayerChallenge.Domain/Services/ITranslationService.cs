@@ -7,7 +7,7 @@ namespace TrueLayerChallenge.Domain.Services
 {
     public interface ITranslationService
     {
-        Task<string> GetYodaTranslationAsync(string text);
-        Task<string> GetShakespeareTranslationAsync(string text);
+        Task<HttpResultResponse<string>> GetYodaTranslationAsync(string text);
+        Task<HttpResultResponse<string>> GetShakespeareTranslationAsync(string text);
     }
 }

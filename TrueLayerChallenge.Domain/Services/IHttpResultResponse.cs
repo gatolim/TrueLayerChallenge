@@ -6,8 +6,9 @@ using TrueLayerChallenge.Domain.QueryModels;
 
 namespace TrueLayerChallenge.Domain.Services
 {
-    public interface IPokemonService
+    public interface IHttpResultResponse<T> where T : class
     {
-        Task<HttpResultResponse<Pokemon>> GetPokemonDetailsAsync(string text);
+        HttpResultResponse<T> OK(T data);
+        HttpResultResponse<T> Error(string message);
     }
 }

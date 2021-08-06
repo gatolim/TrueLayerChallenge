@@ -27,21 +27,28 @@ namespace TrueLayerChallenge.Domain.QueryHandlers
             var cachedPokemon = await _dataStore.GetPokemonAsync(query.PokemonName);
             if (cachedPokemon == null)
             {
-                cachedPokemon = await _pokemonService.GetPokemonDetailsAsync(query.PokemonName);
+                var response = await _pokemonService.GetPokemonDetailsAsync(query.PokemonName);
+                if (response.IsSucceed)
+                    cachedPokemon = response.Data;
             }
 
+            // Attempt to translate the pokemon if it hasn't been translated yet
             if (cachedPokemon != null && string.IsNullOrWhiteSpace(cachedPokemon.TranslatedDescription))
             {
+                HttpResultResponse<string> response;
                 if ((!string.IsNullOrWhiteSpace(cachedPokemon.Habitat) && cachedPokemon.Habitat.Equals("cave", StringComparison.OrdinalIgnoreCase)) || cachedPokemon.IsLegendary)
                 {
-                    cachedPokemon.TranslatedDescription = await _translateService.GetYodaTranslationAsync(cachedPokemon.StandardDescription);
+                    response = await _translateService.GetYodaTranslationAsync(cachedPokemon.StandardDescription);
                 }
                 else
                 {
-                    cachedPokemon.TranslatedDescription = await _translateService.GetShakespeareTranslationAsync(cachedPokemon.StandardDescription);
+                    response = await _translateService.GetShakespeareTranslationAsync(cachedPokemon.StandardDescription);
                 }
+
+                if (response.IsSucceed) { cachedPokemon.TranslatedDescription = response.Data; }
             }
 
+            // update cache with latest info
             if (cachedPokemon != null)
                 await _dataStore.WritePokemonAsync(cachedPokemon);
 

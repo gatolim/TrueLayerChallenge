@@ -32,6 +32,10 @@ namespace TrueLayerChallenge.Domain.Test
                .Setup(p => p.GetPokemonAsync(query.PokemonName))
                .Returns(Task.FromResult(new Pokemon() { Name = query.PokemonName, IsLegendary = true }));
 
+            _translationServiceMock
+                .Setup(p => p.GetYodaTranslationAsync(It.IsAny<string>()))
+                .Returns(Task.FromResult(HttpResultResponse<string>.OK("YodaTranslation")));
+
             _queryHandler = new GetPokemonTranslatedHandler(_pokemonStoreMock.Object, _pokemonServiceMock.Object, _translationServiceMock.Object);
             Pokemon pokemon = await _queryHandler.ReadAsync(query);
 
@@ -57,8 +61,11 @@ namespace TrueLayerChallenge.Domain.Test
 
             _pokemonServiceMock
                .Setup(p => p.GetPokemonDetailsAsync(query.PokemonName))
-               .Returns(Task.FromResult(new Pokemon() { Name = query.PokemonName, IsLegendary = true }));
-
+               .Returns(Task.FromResult(HttpResultResponse<Pokemon>.OK(new Pokemon() { Name = query.PokemonName, IsLegendary = true })));
+            
+            _translationServiceMock
+                .Setup(p => p.GetYodaTranslationAsync(It.IsAny<string>()))
+                .Returns(Task.FromResult(HttpResultResponse<string>.OK("YodaTranslation")));
 
             _queryHandler = new GetPokemonTranslatedHandler(_pokemonStoreMock.Object, _pokemonServiceMock.Object, _translationServiceMock.Object);
             Pokemon pokemon = await _queryHandler.ReadAsync(query);
@@ -86,7 +93,7 @@ namespace TrueLayerChallenge.Domain.Test
 
             _pokemonServiceMock
                .Setup(p => p.GetPokemonDetailsAsync(query.PokemonName))
-               .Returns(Task.FromResult<Pokemon>(null));
+               .Returns(Task.FromResult(HttpResultResponse<Pokemon>.Error($"No result were found for {query.PokemonName}")));
 
 
             _queryHandler = new GetPokemonTranslatedHandler(_pokemonStoreMock.Object, _pokemonServiceMock.Object, _translationServiceMock.Object);
@@ -119,7 +126,7 @@ namespace TrueLayerChallenge.Domain.Test
 
             _translationServiceMock
                 .Setup(p => p.GetYodaTranslationAsync(It.IsAny<string>()))
-                .Returns(Task.FromResult("YodaTranslation"));
+                .Returns(Task.FromResult(HttpResultResponse<string>.OK("YodaTranslation")));
 
 
             _queryHandler = new GetPokemonTranslatedHandler(_pokemonStoreMock.Object, _pokemonServiceMock.Object, _translationServiceMock.Object);
@@ -153,7 +160,7 @@ namespace TrueLayerChallenge.Domain.Test
 
             _translationServiceMock
                 .Setup(p => p.GetShakespeareTranslationAsync(It.IsAny<string>()))
-                .Returns(Task.FromResult("ShakespeareTranslation"));
+                .Returns(Task.FromResult(HttpResultResponse<string>.OK("ShakespeareTranslation")));
 
 
             _queryHandler = new GetPokemonTranslatedHandler(_pokemonStoreMock.Object, _pokemonServiceMock.Object, _translationServiceMock.Object);
@@ -184,7 +191,7 @@ namespace TrueLayerChallenge.Domain.Test
 
             _translationServiceMock
                 .Setup(p => p.GetShakespeareTranslationAsync(It.IsAny<string>()))
-                .Returns(Task.FromResult(""));
+                .Returns(Task.FromResult(HttpResultResponse<string>.Error("Shakespeare translation was found.")));
 
 
             _queryHandler = new GetPokemonTranslatedHandler(_pokemonStoreMock.Object, _pokemonServiceMock.Object, _translationServiceMock.Object);

@@ -1,7 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Moq;
-using System;
 using System.Threading.Tasks;
 using TrueLayerChallenge.Domain.Database;
 using TrueLayerChallenge.Domain.Queries;
@@ -16,7 +13,6 @@ namespace TrueLayerChallenge.Domain.Test
     {
         private Mock<IPokemonDatastore> _pokemonStoreMock = new Mock<IPokemonDatastore>();
         private Mock<IPokemonService> _pokemonServiceMock = new Mock<IPokemonService>();
-        private Mock<ILogger<GetPokemonHandler>> _loggerMock = new Mock<ILogger<GetPokemonHandler>>();
         private GetPokemonHandler _queryHandler;
 
         [Fact]
@@ -31,14 +27,12 @@ namespace TrueLayerChallenge.Domain.Test
                .Setup(p => p.GetPokemonAsync(query.PokemonName))
                .Returns(Task.FromResult(new Pokemon() { Name = query.PokemonName }));
 
-            _queryHandler = new GetPokemonHandler(_pokemonStoreMock.Object, _pokemonServiceMock.Object, _loggerMock.Object);
+            _queryHandler = new GetPokemonHandler(_pokemonStoreMock.Object, _pokemonServiceMock.Object);
             Pokemon pokemon = await _queryHandler.ReadAsync(query);
-
 
             Assert.Equal(query.PokemonName, pokemon?.Name);
             _pokemonServiceMock.Verify(s => s.GetPokemonDetailsAsync(query.PokemonName), Times.Never);
             _pokemonStoreMock.Verify(s => s.WritePokemonAsync(It.IsAny<Pokemon>()), Times.Never);
-
         }
 
         [Fact]
@@ -55,12 +49,10 @@ namespace TrueLayerChallenge.Domain.Test
 
             _pokemonServiceMock
                .Setup(p => p.GetPokemonDetailsAsync(query.PokemonName))
-               .Returns(Task.FromResult(new Pokemon() { Name = query.PokemonName }));
+               .Returns(Task.FromResult(HttpResultResponse<Pokemon>.OK(new Pokemon() { Name = query.PokemonName })));
 
-
-            _queryHandler = new GetPokemonHandler(_pokemonStoreMock.Object, _pokemonServiceMock.Object, _loggerMock.Object);
+            _queryHandler = new GetPokemonHandler(_pokemonStoreMock.Object, _pokemonServiceMock.Object);
             Pokemon pokemon = await _queryHandler.ReadAsync(query);
-
 
             Assert.Equal(query.PokemonName, pokemon?.Name);
             _pokemonServiceMock.Verify(s => s.GetPokemonDetailsAsync(query.PokemonName), Times.Once);
@@ -82,12 +74,10 @@ namespace TrueLayerChallenge.Domain.Test
 
             _pokemonServiceMock
                .Setup(p => p.GetPokemonDetailsAsync(query.PokemonName))
-               .Returns(Task.FromResult<Pokemon>(null));
+               .Returns(Task.FromResult(HttpResultResponse<Pokemon>.Error($"No result were found for {query.PokemonName}")));
 
-
-            _queryHandler = new GetPokemonHandler(_pokemonStoreMock.Object, _pokemonServiceMock.Object, _loggerMock.Object);
+            _queryHandler = new GetPokemonHandler(_pokemonStoreMock.Object, _pokemonServiceMock.Object);
             Pokemon pokemon = await _queryHandler.ReadAsync(query);
-
 
             Assert.True(pokemon == null);
             _pokemonServiceMock.Verify(s => s.GetPokemonDetailsAsync(query.PokemonName), Times.Once);

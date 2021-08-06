@@ -14,13 +14,11 @@ namespace TrueLayerChallenge.Domain.QueryHandlers
     {
         private IPokemonDatastore _dataStore;
         private IPokemonService _pokemonService;
-        private ILogger _logger;
 
-        public GetPokemonHandler(IPokemonDatastore dataStore, IPokemonService pokemonService, ILogger<GetPokemonHandler> logger)
+        public GetPokemonHandler(IPokemonDatastore dataStore, IPokemonService pokemonService)
         {
             _dataStore = dataStore;
             _pokemonService = pokemonService;
-            _logger = logger;
         }
 
         public async Task<Pokemon> ReadAsync(GetPokemonDetails query)
@@ -29,9 +27,17 @@ namespace TrueLayerChallenge.Domain.QueryHandlers
             cachedPokemon = await _dataStore.GetPokemonAsync(query.PokemonName);
             if (cachedPokemon == null)
             {
-                cachedPokemon = await _pokemonService.GetPokemonDetailsAsync(query.PokemonName);
+                var response = await _pokemonService.GetPokemonDetailsAsync(query.PokemonName);
 
-                if (cachedPokemon != null) { await _dataStore.WritePokemonAsync(cachedPokemon); }
+                if (response.IsSucceed)
+                {
+                    cachedPokemon = response.Data;
+                    await _dataStore.WritePokemonAsync(cachedPokemon);
+                }
+                else
+                {
+                    // throw custom exception with suggest solution and let API Global handler to handle those.
+                }
             }
 
             return cachedPokemon;
