@@ -30,7 +30,8 @@ namespace TrueLayerChallenge.Domain.Test
             _queryHandler = new GetPokemonHandler(_pokemonStoreMock.Object, _pokemonServiceMock.Object);
             Pokemon pokemon = await _queryHandler.ReadAsync(query);
 
-            Assert.Equal(query.PokemonName, pokemon?.Name);
+            Assert.NotNull(pokemon);
+            Assert.Equal(query.PokemonName, pokemon.Name);
             _pokemonServiceMock.Verify(s => s.GetPokemonDetailsAsync(query.PokemonName), Times.Never);
             _pokemonStoreMock.Verify(s => s.WritePokemonAsync(It.IsAny<Pokemon>()), Times.Never);
         }
@@ -54,7 +55,8 @@ namespace TrueLayerChallenge.Domain.Test
             _queryHandler = new GetPokemonHandler(_pokemonStoreMock.Object, _pokemonServiceMock.Object);
             Pokemon pokemon = await _queryHandler.ReadAsync(query);
 
-            Assert.Equal(query.PokemonName, pokemon?.Name);
+            Assert.NotNull(pokemon);
+            Assert.Equal(query.PokemonName, pokemon.Name);
             _pokemonServiceMock.Verify(s => s.GetPokemonDetailsAsync(query.PokemonName), Times.Once);
             _pokemonStoreMock.Verify(s => s.GetPokemonAsync(query.PokemonName), Times.Once);
             _pokemonStoreMock.Verify(s => s.WritePokemonAsync(It.IsAny<Pokemon>()), Times.Once);
@@ -79,7 +81,7 @@ namespace TrueLayerChallenge.Domain.Test
             _queryHandler = new GetPokemonHandler(_pokemonStoreMock.Object, _pokemonServiceMock.Object);
             Pokemon pokemon = await _queryHandler.ReadAsync(query);
 
-            Assert.True(pokemon == null);
+            Assert.Null(pokemon);
             _pokemonServiceMock.Verify(s => s.GetPokemonDetailsAsync(query.PokemonName), Times.Once);
             _pokemonStoreMock.Verify(s => s.GetPokemonAsync(query.PokemonName), Times.Once);
             _pokemonStoreMock.Verify(s => s.WritePokemonAsync(It.IsAny<Pokemon>()), Times.Never);

@@ -39,7 +39,9 @@ namespace TrueLayerChallenge.Domain.Test
             _queryHandler = new GetPokemonTranslatedHandler(_pokemonStoreMock.Object, _pokemonServiceMock.Object, _translationServiceMock.Object);
             Pokemon pokemon = await _queryHandler.ReadAsync(query);
 
-            Assert.Equal(query.PokemonName, pokemon?.Name);
+
+            Assert.NotNull(pokemon);
+            Assert.Equal(query.PokemonName, pokemon.Name);
             _pokemonServiceMock.Verify(s => s.GetPokemonDetailsAsync(It.IsAny<string>()), Times.Never);
             _translationServiceMock.Verify(s => s.GetShakespeareTranslationAsync(It.IsAny<string>()), Times.Never);
             _translationServiceMock.Verify(s => s.GetYodaTranslationAsync(It.IsAny<string>()), Times.Once);
@@ -71,7 +73,8 @@ namespace TrueLayerChallenge.Domain.Test
             Pokemon pokemon = await _queryHandler.ReadAsync(query);
 
 
-            Assert.Equal(query.PokemonName, pokemon?.Name);
+            Assert.NotNull(pokemon);
+            Assert.Equal(query.PokemonName, pokemon.Name);
             _pokemonServiceMock.Verify(s => s.GetPokemonDetailsAsync(query.PokemonName), Times.Once);
             _translationServiceMock.Verify(s => s.GetShakespeareTranslationAsync(It.IsAny<string>()), Times.Never);
             _translationServiceMock.Verify(s => s.GetYodaTranslationAsync(It.IsAny<string>()), Times.Once);
@@ -100,7 +103,7 @@ namespace TrueLayerChallenge.Domain.Test
             Pokemon pokemon = await _queryHandler.ReadAsync(query);
 
 
-            Assert.True(pokemon == null);
+            Assert.Null(pokemon);
             _pokemonServiceMock.Verify(s => s.GetPokemonDetailsAsync(query.PokemonName), Times.Once);
             _translationServiceMock.Verify(s => s.GetShakespeareTranslationAsync(It.IsAny<string>()), Times.Never);
             _translationServiceMock.Verify(s => s.GetYodaTranslationAsync(It.IsAny<string>()), Times.Never);
@@ -132,10 +135,10 @@ namespace TrueLayerChallenge.Domain.Test
             _queryHandler = new GetPokemonTranslatedHandler(_pokemonStoreMock.Object, _pokemonServiceMock.Object, _translationServiceMock.Object);
             Pokemon pokemon = await _queryHandler.ReadAsync(query);
 
-
-            Assert.Equal(query.PokemonName, pokemon?.Name);
-            Assert.Equal("StandardText", pokemon?.StandardDescription);
-            Assert.Equal("YodaTranslation", pokemon?.TranslatedDescription);
+            Assert.NotNull(pokemon);
+            Assert.Equal(query.PokemonName, pokemon.Name);
+            Assert.Equal("StandardText", pokemon.StandardDescription);
+            Assert.Equal("YodaTranslation", pokemon.TranslatedDescription);
             _pokemonServiceMock.Verify(s => s.GetPokemonDetailsAsync(query.PokemonName), Times.Never);
             _translationServiceMock.Verify(s => s.GetShakespeareTranslationAsync(It.IsAny<string>()), Times.Never);
             _translationServiceMock.Verify(s => s.GetYodaTranslationAsync(It.IsAny<string>()), Times.Once);
@@ -167,9 +170,10 @@ namespace TrueLayerChallenge.Domain.Test
             Pokemon pokemon = await _queryHandler.ReadAsync(query);
 
 
-            Assert.Equal(query.PokemonName, pokemon?.Name);
-            Assert.Equal("StandardText", pokemon?.StandardDescription);
-            Assert.Equal("ShakespeareTranslation", pokemon?.TranslatedDescription);
+            Assert.NotNull(pokemon);
+            Assert.Equal(query.PokemonName, pokemon.Name);
+            Assert.Equal("StandardText", pokemon.StandardDescription);
+            Assert.Equal("ShakespeareTranslation", pokemon.TranslatedDescription);
             _pokemonServiceMock.Verify(s => s.GetPokemonDetailsAsync(query.PokemonName), Times.Never);
             _translationServiceMock.Verify(s => s.GetShakespeareTranslationAsync(It.IsAny<string>()), Times.Once);
             _translationServiceMock.Verify(s => s.GetYodaTranslationAsync(It.IsAny<string>()), Times.Never);
@@ -191,16 +195,16 @@ namespace TrueLayerChallenge.Domain.Test
 
             _translationServiceMock
                 .Setup(p => p.GetShakespeareTranslationAsync(It.IsAny<string>()))
-                .Returns(Task.FromResult(HttpResultResponse<string>.Error("Shakespeare translation was found.")));
+                .Returns(Task.FromResult(HttpResultResponse<string>.Error("")));
 
 
             _queryHandler = new GetPokemonTranslatedHandler(_pokemonStoreMock.Object, _pokemonServiceMock.Object, _translationServiceMock.Object);
             Pokemon pokemon = await _queryHandler.ReadAsync(query);
 
-
-            Assert.Equal(query.PokemonName, pokemon?.Name);
-            Assert.Equal("StandardText", pokemon?.StandardDescription);
-            Assert.True(string.IsNullOrWhiteSpace(pokemon?.TranslatedDescription));
+            Assert.NotNull(pokemon);
+            Assert.Equal(query.PokemonName, pokemon.Name);
+            Assert.Equal("StandardText", pokemon.StandardDescription);
+            Assert.True(string.IsNullOrWhiteSpace(pokemon.TranslatedDescription));
             _pokemonServiceMock.Verify(s => s.GetPokemonDetailsAsync(query.PokemonName), Times.Never);
             _translationServiceMock.Verify(s => s.GetShakespeareTranslationAsync(It.IsAny<string>()), Times.Once);
             _translationServiceMock.Verify(s => s.GetYodaTranslationAsync(It.IsAny<string>()), Times.Never);

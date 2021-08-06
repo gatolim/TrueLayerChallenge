@@ -16,7 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TrueLayerChallenge.DataStore.InMemoryCache\TrueLayerChallenge.DataStore.InMemoryCache.csproj" />
     <ProjectReference Include="..\TrueLayerChallenge.Domain\TrueLayerChallenge.Domain.csproj" />
+    <ProjectReference Include="..\TrueLayerChallenge.Service.PokemonService\TrueLayerChallenge.Service.PokemonService.csproj" />
+    <ProjectReference Include="..\TrueLayerChallenge.Service.TranslationService\TrueLayerChallenge.Service.TranslationService.csproj" />
   </ItemGroup>
 
 

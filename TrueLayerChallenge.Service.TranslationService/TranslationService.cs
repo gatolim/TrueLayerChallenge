@@ -36,8 +36,8 @@ namespace TrueLayerChallenge.Service.TranslationService
                 }
 
                 dynamic json = JValue.Parse(jsonResponse);
-
-                return HttpResultResponse<string>.OK(json.contents.translated);
+                string translatedText = json.contents.translated;
+                return HttpResultResponse<string>.OK(translatedText);
             }
             catch (Exception ex)
             {

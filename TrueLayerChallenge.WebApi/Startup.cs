@@ -5,7 +5,10 @@ using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using TrueLayerChallenge.DataStore.InMemoryCache;
 using TrueLayerChallenge.Domain;
+using TrueLayerChallenge.Service.PokemonService;
+using TrueLayerChallenge.Service.TranslationService;
 using TrueLayerChallenge.WebApi.Middleware;
 
 namespace TrueLayerChallenge.WebApi
@@ -33,7 +36,11 @@ namespace TrueLayerChallenge.WebApi
                 config.ApiVersionReader = new HeaderApiVersionReader("api-version");
             });
 
+            services.AddSwaggerDocumentation();
             services.AddDomain();
+            services.AddPokemonService();
+            services.AddTranslationService();
+            services.AddDataStore();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,6 +63,8 @@ namespace TrueLayerChallenge.WebApi
             {
                 endpoints.MapControllers();
             });
+
+            app.UseSwaggerDocumentation();
         }
     }
 }

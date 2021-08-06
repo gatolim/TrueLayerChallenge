@@ -41,11 +41,11 @@ namespace TrueLayerChallenge.Service.PokemonService.Test
 
             dynamicPokemon.flavor_text_entries.Add(flavorTextArray);
 
-            var str = dynamicPokemon.ToString();
+            string mockPokemon = dynamicPokemon.ToString();
 
             // Setup a respond for the user api (including a wildcard in the URL)
             mockHttp.When($"https://pokeapi.co/api/v2/pokemon-species/{pokemonName}")
-            .Respond("application/json", $"{dynamicPokemon.ToString()}"); // Respond with JSON
+            .Respond("application/json", mockPokemon); // Respond with JSON
 
 
             _httpClient = new HttpClient(mockHttp);
@@ -56,13 +56,14 @@ namespace TrueLayerChallenge.Service.PokemonService.Test
 
             Pokemon pokemon = response.Data;
 
-            Assert.Equal(pokemonName, pokemon?.Name);
-            Assert.Equal(habitat, pokemon?.Habitat);
-            Assert.Equal(isLegendary.HasValue ? isLegendary.Value : false, pokemon?.IsLegendary);
+            Assert.NotNull(pokemon);
+            Assert.Equal(pokemonName, pokemon.Name);
+            Assert.Equal(habitat, pokemon.Habitat);
+            Assert.Equal(isLegendary.HasValue ? isLegendary.Value : false, pokemon.IsLegendary);
             if (culture == "en")
-                Assert.Equal(falavorText, pokemon?.StandardDescription);
+                Assert.Equal(falavorText, pokemon.StandardDescription);
             else
-                Assert.True(string.IsNullOrWhiteSpace(pokemon?.StandardDescription));
+                Assert.True(string.IsNullOrWhiteSpace(pokemon.StandardDescription));
         }
 
         [Fact]
