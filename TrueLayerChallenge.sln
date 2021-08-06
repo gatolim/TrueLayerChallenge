@@ -13,15 +13,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrueLayerChallenge.Domain.T
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrueLayerChallenge.DataStore.InMemoryCache", "TrueLayerChallenge.DataStore.InMemoryCache\TrueLayerChallenge.DataStore.InMemoryCache.csproj", "{11A6F42F-1320-4939-9322-422DE9E40DA5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrueLayerChallenge.Service.PokemonService.Test", "TrueLayerChallenge.Service.PokemonService.Test\TrueLayerChallenge.Service.PokemonService.Test.csproj", "{1EBE443B-104F-42A8-90DC-02DFD35712A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrueLayerChallenge.Service.PokemonService.Test", "Test\TrueLayerChallenge.Service.PokemonService.Test\TrueLayerChallenge.Service.PokemonService.Test.csproj", "{1EBE443B-104F-42A8-90DC-02DFD35712A2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrueLayerChallenge.Service.TranslationService.Test", "TrueLayerChallenge.Service.TranslationService.Test\TrueLayerChallenge.Service.TranslationService.Test.csproj", "{D22CD5F7-0072-494C-9863-982A437E3A31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrueLayerChallenge.Service.TranslationService.Test", "Test\TrueLayerChallenge.Service.TranslationService.Test\TrueLayerChallenge.Service.TranslationService.Test.csproj", "{D22CD5F7-0072-494C-9863-982A437E3A31}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrueLayerChallenge.Service.PokemonService", "TrueLayerChallenge.Service.PokemonService\TrueLayerChallenge.Service.PokemonService.csproj", "{B4B746F2-C62D-44B2-87E7-30C31E9975FE}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrueLayerChallenge.Service.TranslationService", "TrueLayerChallenge.Service.TranslationService\TrueLayerChallenge.Service.TranslationService.csproj", "{0DE8A7EB-8AEF-4622-B567-A22B0A5D0952}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrueLayerChallenge.WebApi.Test", "TrueLayerChallenge.WebApi.Test\TrueLayerChallenge.WebApi.Test.csproj", "{D481AE8F-4F76-45FD-AA25-24FBD0EB91ED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TrueLayerChallenge.WebApi.Test", "Test\TrueLayerChallenge.WebApi.Test\TrueLayerChallenge.WebApi.Test.csproj", "{D481AE8F-4F76-45FD-AA25-24FBD0EB91ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TrueLayerChallenge.Service.PokemonService\TrueLayerChallenge.Service.PokemonService.csproj" />
+    <ProjectReference Include="..\..\TrueLayerChallenge.Service.TranslationService\TrueLayerChallenge.Service.TranslationService.csproj" />
   </ItemGroup>
 
 </Project>

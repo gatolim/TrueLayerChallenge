@@ -23,8 +23,8 @@ namespace TrueLayerChallenge.Domain.QueryHandlers
 
         public async Task<Pokemon> ReadAsync(GetPokemonDetails query)
         {
-            Pokemon cachedPokemon = null;
-            cachedPokemon = await _dataStore.GetPokemonAsync(query.PokemonName);
+            // First check the inmemory cache see if pokemon existed, if so use that instead.
+            Pokemon cachedPokemon = await _dataStore.GetPokemonAsync(query.PokemonName);
             if (cachedPokemon == null)
             {
                 var response = await _pokemonService.GetPokemonDetailsAsync(query.PokemonName);

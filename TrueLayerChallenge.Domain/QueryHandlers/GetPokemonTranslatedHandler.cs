@@ -24,12 +24,19 @@ namespace TrueLayerChallenge.Domain.QueryHandlers
 
         public async Task<Pokemon> ReadAsync(GetPokemonTranslatedDetails query)
         {
+            // First check the inmemory cache see if pokemon existed, if so use that instead.
             var cachedPokemon = await _dataStore.GetPokemonAsync(query.PokemonName);
             if (cachedPokemon == null)
             {
                 var response = await _pokemonService.GetPokemonDetailsAsync(query.PokemonName);
                 if (response.IsSucceed)
+                {
                     cachedPokemon = response.Data;
+                }
+                else
+                {
+                    // throw custom exception with suggest solution and let API Global handler to handle those.
+                }
             }
 
             // Attempt to translate the pokemon if it hasn't been translated yet
@@ -45,7 +52,14 @@ namespace TrueLayerChallenge.Domain.QueryHandlers
                     response = await _translateService.GetShakespeareTranslationAsync(cachedPokemon.StandardDescription);
                 }
 
-                if (response.IsSucceed) { cachedPokemon.TranslatedDescription = response.Data; }
+                if (response.IsSucceed)
+                {
+                    cachedPokemon.TranslatedDescription = response.Data;
+                }
+                else
+                {
+                    // throw custom exception with suggest solution and let API Global handler to handle those.
+                }
             }
 
             // update cache with latest info

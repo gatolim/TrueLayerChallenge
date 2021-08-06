@@ -15,8 +15,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TrueLayerChallenge.Domain\TrueLayerChallenge.Domain.csproj" />
-    <ProjectReference Include="..\TrueLayerChallenge.WebApi\TrueLayerChallenge.WebApi.csproj" />
+    <ProjectReference Include="..\..\TrueLayerChallenge.Domain\TrueLayerChallenge.Domain.csproj" />
+    <ProjectReference Include="..\..\TrueLayerChallenge.WebApi\TrueLayerChallenge.WebApi.csproj" />
   </ItemGroup>
 
 </Project>

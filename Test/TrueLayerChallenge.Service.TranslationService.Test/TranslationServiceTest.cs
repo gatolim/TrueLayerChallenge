@@ -2,11 +2,11 @@ using System;
 using Xunit;
 using RichardSzalay.MockHttp;
 using System.Net.Http;
-using TrueLayerChallenge.Domain.Services;
 using Moq;
 using Microsoft.Extensions.Logging;
 using System.Web;
 using Newtonsoft.Json.Linq;
+using TrueLayerChallenge.Domain.Services;
 
 namespace TrueLayerChallenge.Service.TranslationService.Test
 {
@@ -15,7 +15,7 @@ namespace TrueLayerChallenge.Service.TranslationService.Test
         private MockHttpMessageHandler mockHttp = new MockHttpMessageHandler();
         private HttpClient _httpClient;
         private Mock<ILogger<TranslationService>> logger = new Mock<ILogger<TranslationService>>();
-        private ITranslationService _service;
+        private TranslationService _service;
 
         [Fact]
         public async void TestSucceedFromApi()

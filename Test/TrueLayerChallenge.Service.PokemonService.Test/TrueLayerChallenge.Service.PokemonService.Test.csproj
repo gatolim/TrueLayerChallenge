@@ -16,8 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TrueLayerChallenge.Domain\TrueLayerChallenge.Domain.csproj" />
-    <ProjectReference Include="..\TrueLayerChallenge.Service.TranslationService\TrueLayerChallenge.Service.TranslationService.csproj" />
+    <ProjectReference Include="..\..\TrueLayerChallenge.Service.PokemonService\TrueLayerChallenge.Service.PokemonService.csproj" />
   </ItemGroup>
 
 </Project>
