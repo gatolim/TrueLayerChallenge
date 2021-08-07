@@ -41,16 +41,9 @@ namespace TrueLayerChallenge.Domain.QueryHandlers
             // Attempt to translate the pokemon if it hasn't been already translated.
             if (cachedPokemon != null && string.IsNullOrWhiteSpace(cachedPokemon.TranslatedDescription))
             {
-                HttpResultResponse<string> response;
-                if (ShouldUseYoda(cachedPokemon))
-                {
-                    response = await _translateService.GetYodaTranslationAsync(cachedPokemon.StandardDescription);
-                }
-                else
-                {
-                    response = await _translateService.GetShakespeareTranslationAsync(cachedPokemon.StandardDescription);
-                }
-
+                HttpResultResponse<string> response = 
+                    await _translateService.GetTranslationAsync(cachedPokemon.StandardDescription, cachedPokemon.TranslationType);
+                
                 if (response.IsSucceed)
                 {
                     cachedPokemon.TranslatedDescription = response.Data;
@@ -67,11 +60,6 @@ namespace TrueLayerChallenge.Domain.QueryHandlers
                 await _dataStore.WritePokemonAsync(cachedPokemon);
 
             return cachedPokemon;
-        }
-
-        protected bool ShouldUseYoda(Pokemon pokemon)
-        {
-            return (!string.IsNullOrWhiteSpace(pokemon.Habitat) && pokemon.Habitat.Equals("cave", StringComparison.OrdinalIgnoreCase)) || pokemon.IsLegendary;
         }
     }
 }

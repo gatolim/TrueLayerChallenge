@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using System.Web;
 using Newtonsoft.Json.Linq;
 using TrueLayerChallenge.Domain.Services;
+using TrueLayerChallenge.Domain.Enum;
 
 namespace TrueLayerChallenge.Service.TranslationService.Test
 {
@@ -17,30 +18,40 @@ namespace TrueLayerChallenge.Service.TranslationService.Test
         private Mock<ILogger<TranslationService>> logger = new Mock<ILogger<TranslationService>>();
         private TranslationService _service;
 
-        [Fact]
-        public async void TestSucceedFromApi()
+        [Theory]
+        [InlineData(TranslationType.Yoda, "YodaTranslatedText")]
+        [InlineData(TranslationType.Shakespeare, "ShakespeareTranslatedText")]
+        public async void TestSucceedFromApi(TranslationType type, string expectedText)
         {
             var untranslatedText = "test";
             var encodedText = $"text={HttpUtility.UrlEncode(untranslatedText)}";
 
-            dynamic dynamicResponse = new JObject() as dynamic;
-            dynamicResponse.contents = new JObject() as dynamic;
-            dynamicResponse.contents.translated = "SomeTranslatedText";
+            dynamic dynamicYodaResponse = new JObject() as dynamic;
+            dynamicYodaResponse.contents = new JObject() as dynamic;
+            dynamicYodaResponse.contents.translated = "YodaTranslatedText";
+            string mockYodaResponse = dynamicYodaResponse.ToString();
 
-            string mockResponse = dynamicResponse.ToString();
+            dynamic dynamicShakespeareResponse = new JObject() as dynamic;
+            dynamicShakespeareResponse.contents = new JObject() as dynamic;
+            dynamicShakespeareResponse.contents.translated = "ShakespeareTranslatedText";
+            string mockShakespeareResponse = dynamicShakespeareResponse.ToString();
 
-            // Setup a respond for the user api (including a wildcard in the URL)
+            // Setup a respond for the translation api
             mockHttp.When($"https://api.funtranslations.com/translate/yoda.json?{encodedText}")
-            .Respond("application/json", mockResponse); // Respond with JSON
+            .Respond("application/json", mockYodaResponse); // Respond with JSON
+
+            mockHttp.When($"https://api.funtranslations.com/translate/shakespeare.json?{encodedText}")
+            .Respond("application/json", mockShakespeareResponse); // Respond with JSON
+
 
 
             _httpClient = new HttpClient(mockHttp);
             _service = new TranslationService(_httpClient, logger.Object);
-            HttpResultResponse<string> response = await _service.GetYodaTranslationAsync(untranslatedText);
+            HttpResultResponse<string> response = await _service.GetTranslationAsync(untranslatedText, type);
 
             Assert.True(response.IsSucceed);
             Assert.NotNull(response.Data);
-            Assert.Equal("SomeTranslatedText", response.Data);
+            Assert.Equal(expectedText, response.Data);
         }
 
         [Fact]
@@ -52,14 +63,13 @@ namespace TrueLayerChallenge.Service.TranslationService.Test
             mockHttp.When($"https://api.funtranslations.com/translate/yoda.json?{encodedText}")
             .Respond("application/json", ""); // Respond with JSON
 
-
             _httpClient = new HttpClient(mockHttp);
             _service = new TranslationService(_httpClient, logger.Object);
-            HttpResultResponse<string> response = await _service.GetYodaTranslationAsync(untranslatedText);
+            HttpResultResponse<string> response = await _service.GetTranslationAsync(untranslatedText, TranslationType.Yoda);
 
             Assert.False(response.IsSucceed);
             Assert.Null(response.Data);
-            Assert.Equal("Yoda translation was found.", response.ErrorMessage);
+            Assert.Equal("Translation was not found.", response.ErrorMessage);
         }
 
         [Fact]
@@ -73,7 +83,7 @@ namespace TrueLayerChallenge.Service.TranslationService.Test
 
             _httpClient = new HttpClient(mockHttp);
             _service = new TranslationService(_httpClient, logger.Object);
-            HttpResultResponse<string> response = await _service.GetYodaTranslationAsync(untranslatedText);
+            HttpResultResponse<string> response = await _service.GetTranslationAsync(untranslatedText, TranslationType.Yoda);
 
             Assert.False(response.IsSucceed);
             Assert.Null(response.Data);

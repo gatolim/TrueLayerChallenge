@@ -6,6 +6,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using TrueLayerChallenge.Domain.Enum;
 using TrueLayerChallenge.Domain.Services;
 
 namespace TrueLayerChallenge.Service.TranslationService
@@ -25,16 +26,18 @@ namespace TrueLayerChallenge.Service.TranslationService
             _logger = logger;
         }
 
-        public async Task<HttpResultResponse<string>> GetYodaTranslationAsync(string text)
+        public async Task<HttpResultResponse<string>> GetTranslationAsync(string text, TranslationType type)
         {
             try
             {
                 var input = $"text={HttpUtility.UrlEncode(text)}";
-                var jsonResponse = await Client.GetStringAsync($"translate/yoda.json?{input}");
+                string query = $"{GetTranslationEndpointByType(type)}?{input}";
+
+                var jsonResponse = await Client.GetStringAsync(query);
 
                 if (string.IsNullOrWhiteSpace(jsonResponse))
                 {
-                    return HttpResultResponse<string>.Error("Yoda translation was found.");
+                    return HttpResultResponse<string>.Error("Translation was not found.");
                 }
 
                 // Prase result into dynamic so we don't need to maintain a model. 
@@ -47,36 +50,29 @@ namespace TrueLayerChallenge.Service.TranslationService
             catch (Exception ex)
             {
                 // Might also want to log the pokemon info for troubleshooting.
-                _logger.LogError("Failed running Yoda translation");
+                _logger.LogError("Failed getting translation");
                 return HttpResultResponse<string>.Error($"{ex.Message}");
             }
 
         }
 
-        public async Task<HttpResultResponse<string>> GetShakespeareTranslationAsync(string text)
+        protected string GetTranslationEndpointByType(TranslationType type)
         {
-            try
+            string query = string.Empty;
+            switch (type)
             {
-                var input = $"text={text}";
-                string jsonResponse = await Client.GetStringAsync($"translate/shakespeare.json?{input}");
-
-                if (string.IsNullOrWhiteSpace(jsonResponse))
-                {
-                    return HttpResultResponse<string>.Error("Shakespeare translation was found.");
-                }
-
-                // Prase result into dynamic so we don't need to maintain a model. 
-                // This should be sufficient for this purpose of this exercise.
-                dynamic json = JValue.Parse(jsonResponse);
-
-                return HttpResultResponse<string>.OK(json.contents.translated);
+                case TranslationType.Yoda:
+                    query = $"translate/yoda.json";
+                    break;
+                case TranslationType.Shakespeare:
+                    query = $"translate/shakespeare.json";
+                    break;
+                default: 
+                    query = $"translate/shakespeare.json";
+                    break;
             }
-            catch (Exception ex)
-            {
-                // Might also want to log the pokemon info for troubleshooting.
-                _logger.LogError("Failed running Shakespeare translation");
-                return HttpResultResponse<string>.Error($"{ex.Message}");
-            }
+
+            return query;
         }
     }
 }
