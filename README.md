@@ -37,4 +37,4 @@ The following would be consider when it comes to productionising the existing co
     2. Implement logic to handle any custom exceptions within the API's Global Error Handler, on top of the existing logic which only handled "Unhandled" exceptions.
     3. Consider implementing with a logging framework (eg serilog), for better logs management and troubleshooting experience.
 6. Adopt Correlationmanager and Correlation ID for exceptions and logs, for troubleshooting pupose.
-7. Apply authentication if needed.
+7. Apply Aauthentication and Authorization if needed.
