@@ -5,6 +5,10 @@ using TrueLayerChallenge.Domain.QueryModels;
 
 namespace TrueLayerChallenge.DataStore.InMemoryCache
 {
+    /// <summary>
+    /// This is a simple inmemory cache to store retrieved pokemon temperory. 
+    /// Due to this is a simple data store no locking, error handling and loggings is written at this time. 
+    /// </summary>
     public class InMemoryCache : IPokemonDatastore
     {
         private ConcurrentDictionary<string, Pokemon> _dataStore;

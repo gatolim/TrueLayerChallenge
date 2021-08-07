@@ -10,6 +10,9 @@ using TrueLayerChallenge.Domain.Services;
 
 namespace TrueLayerChallenge.Service.TranslationService
 {
+    /// <summary>
+    /// A simple service that wrapped with an HttpClient, which in used to interact with external endpoint.
+    /// </summary>
     public class TranslationService : ITranslationService
     {
         public HttpClient Client { get; }
@@ -27,7 +30,6 @@ namespace TrueLayerChallenge.Service.TranslationService
             try
             {
                 var input = $"text={HttpUtility.UrlEncode(text)}";
-
                 var jsonResponse = await Client.GetStringAsync($"translate/yoda.json?{input}");
 
                 if (string.IsNullOrWhiteSpace(jsonResponse))
@@ -35,8 +37,11 @@ namespace TrueLayerChallenge.Service.TranslationService
                     return HttpResultResponse<string>.Error("Yoda translation was found.");
                 }
 
+                // Prase result into dynamic so we don't need to maintain a model. 
+                // This should be sufficient for this purpose of this exercise.
                 dynamic json = JValue.Parse(jsonResponse);
                 string translatedText = json.contents.translated;
+
                 return HttpResultResponse<string>.OK(translatedText);
             }
             catch (Exception ex)
@@ -53,7 +58,6 @@ namespace TrueLayerChallenge.Service.TranslationService
             try
             {
                 var input = $"text={text}";
-
                 string jsonResponse = await Client.GetStringAsync($"translate/shakespeare.json?{input}");
 
                 if (string.IsNullOrWhiteSpace(jsonResponse))
@@ -61,6 +65,8 @@ namespace TrueLayerChallenge.Service.TranslationService
                     return HttpResultResponse<string>.Error("Shakespeare translation was found.");
                 }
 
+                // Prase result into dynamic so we don't need to maintain a model. 
+                // This should be sufficient for this purpose of this exercise.
                 dynamic json = JValue.Parse(jsonResponse);
 
                 return HttpResultResponse<string>.OK(json.contents.translated);

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using TrueLayerChallenge.Domain.Database;
 using TrueLayerChallenge.Domain.Queries;
@@ -39,11 +37,11 @@ namespace TrueLayerChallenge.Domain.QueryHandlers
                 }
             }
 
-            // Attempt to translate the pokemon if it hasn't been translated yet
+            // Attempt to translate the pokemon if it hasn't been already translated.
             if (cachedPokemon != null && string.IsNullOrWhiteSpace(cachedPokemon.TranslatedDescription))
             {
                 HttpResultResponse<string> response;
-                if ((!string.IsNullOrWhiteSpace(cachedPokemon.Habitat) && cachedPokemon.Habitat.Equals("cave", StringComparison.OrdinalIgnoreCase)) || cachedPokemon.IsLegendary)
+                if (ShouldUseYoda(cachedPokemon))
                 {
                     response = await _translateService.GetYodaTranslationAsync(cachedPokemon.StandardDescription);
                 }
@@ -67,6 +65,11 @@ namespace TrueLayerChallenge.Domain.QueryHandlers
                 await _dataStore.WritePokemonAsync(cachedPokemon);
 
             return cachedPokemon;
+        }
+
+        protected bool ShouldUseYoda(Pokemon pokemon)
+        {
+            return (!string.IsNullOrWhiteSpace(pokemon.Habitat) && pokemon.Habitat.Equals("cave", StringComparison.OrdinalIgnoreCase)) || pokemon.IsLegendary;
         }
     }
 }

@@ -14,8 +14,6 @@ namespace TrueLayerChallenge.WebApi.Test
     public class PokemonControllerTest
     {
         private Mock<IQueryProcessor> _queryProcessor = new Mock<IQueryProcessor>();
-        private Mock<IQueryHandler<GetPokemonDetails, QueryModel.Pokemon>> _pokemonHandler = new Mock<IQueryHandler<GetPokemonDetails, QueryModel.Pokemon>>();
-        private Mock<IQueryHandler<GetPokemonTranslatedDetails, QueryModel.Pokemon>> _pokemonTranslatedHandler = new Mock<IQueryHandler<GetPokemonTranslatedDetails, QueryModel.Pokemon>>();
         private PokemonController _controller;
 
         [Fact]
@@ -55,6 +53,7 @@ namespace TrueLayerChallenge.WebApi.Test
 
             Assert.NotNull(response);
             var result = Assert.IsType<Microsoft.AspNetCore.Mvc.NotFoundObjectResult>(response);
+            Assert.Equal(pokemonName, result.Value);
         }
 
 
@@ -97,6 +96,7 @@ namespace TrueLayerChallenge.WebApi.Test
 
             Assert.NotNull(response);
             var result = Assert.IsType<Microsoft.AspNetCore.Mvc.NotFoundObjectResult>(response);
+            Assert.Equal(pokemonName, result.Value);
         }
     }
 }

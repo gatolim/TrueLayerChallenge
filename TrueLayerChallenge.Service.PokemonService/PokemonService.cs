@@ -2,7 +2,6 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TrueLayerChallenge.Domain.QueryModels;
@@ -10,6 +9,9 @@ using TrueLayerChallenge.Domain.Services;
 
 namespace TrueLayerChallenge.Service.PokemonService
 {
+    /// <summary>
+    /// A simple service that wrapped with an HttpClient, which in used to interact with external endpoint.
+    /// </summary>
     public class PokemonService : IPokemonService
     {
         public HttpClient Client { get; }
@@ -33,7 +35,8 @@ namespace TrueLayerChallenge.Service.PokemonService
                     return HttpResultResponse<Pokemon>.Error($"No result were found for {pokemonName}");
                 }
 
-                // prase result into dynamic so we don't need to maintain a model.
+                // Prase result into dynamic so we don't need to maintain a model. 
+                // This should be sufficient for this purpose of this exercise.
                 dynamic json = JValue.Parse(jsonResponse);
 
                 string name = json.name;
