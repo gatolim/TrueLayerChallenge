@@ -22,6 +22,11 @@ namespace TrueLayerChallenge.WebApi.Controllers
             _queryProcessor = queryProcessor;
         }
 
+        /// <summary>
+        /// Get the pokemon detail
+        /// </summary>
+        /// <param name="pokemonName">The name of the pokemon</param>
+        /// <returns>Pokemon's details</returns>
         [HttpGet]
         [Route("{pokemonName}")]
         [MapToApiVersion("1.0")]
@@ -42,7 +47,11 @@ namespace TrueLayerChallenge.WebApi.Controllers
                 IsLegendary = domainResult.IsLegendary
             });
         }
-
+        /// <summary>
+        /// Get the pokemon detail with a funny translation
+        /// </summary>
+        /// <param name="pokemonName">The name of the pokemon</param>
+        /// <returns>Pokemon's details</returns>
         [HttpGet]
         [Route("translated/{pokemonName}")]
         [MapToApiVersion("1.0")]

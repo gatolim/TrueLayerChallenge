@@ -60,8 +60,12 @@ namespace TrueLayerChallenge.WebApi.Test
         }
 
 
-        [Fact]
-        public async Task GetTranslatedPokemon()
+        [Theory]
+        [InlineData("StandardText", "TranslatedText")]
+        [InlineData("", "TranslatedText")]
+        [InlineData("StandardText", "")]
+        [InlineData("", "")]
+        public async Task GetTranslatedPokemon(string standardText, string translatedText)
         {
             var pokemonName = "TestPokemon";
 
@@ -70,8 +74,8 @@ namespace TrueLayerChallenge.WebApi.Test
                .Returns(Task.FromResult(new QueryModel.Pokemon()
                {
                    Name = pokemonName,
-                   StandardDescription = "StandardText",
-                   TranslatedDescription = "TranslatedText"
+                   StandardDescription = standardText,
+                   TranslatedDescription = translatedText
                }));
 
             _controller = new PokemonController(_queryProcessor.Object);
@@ -82,7 +86,7 @@ namespace TrueLayerChallenge.WebApi.Test
             var pokemon = Assert.IsType<Pokemon>(result.Value);
             Assert.NotNull(pokemon);
             Assert.Equal(pokemon.Name, pokemonName);
-            Assert.Equal("TranslatedText", pokemon.Description);
+            Assert.Equal(translatedText??standardText, pokemon.Description);
         }
 
         [Fact]
