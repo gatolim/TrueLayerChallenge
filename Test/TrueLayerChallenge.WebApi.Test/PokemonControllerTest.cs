@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Http;
 using Moq;
 using System;
+using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 using TrueLayerChallenge.Domain;
 using TrueLayerChallenge.Domain.Queries;
-using TrueLayerChallenge.Domain.QueryHandlers;
 using TrueLayerChallenge.WebApi.Controllers;
+using TrueLayerChallenge.WebApi.Middleware;
 using TrueLayerChallenge.WebApi.Models;
 using Xunit;
 using QueryModel = TrueLayerChallenge.Domain.QueryModels;
@@ -53,7 +56,7 @@ namespace TrueLayerChallenge.WebApi.Test
 
             Assert.NotNull(response);
             var result = Assert.IsType<Microsoft.AspNetCore.Mvc.NotFoundObjectResult>(response);
-            Assert.Equal(pokemonName, result.Value);
+            Assert.Equal($"The requested pokemon - {pokemonName} is not found", result.Value);
         }
 
 
@@ -96,7 +99,31 @@ namespace TrueLayerChallenge.WebApi.Test
 
             Assert.NotNull(response);
             var result = Assert.IsType<Microsoft.AspNetCore.Mvc.NotFoundObjectResult>(response);
-            Assert.Equal(pokemonName, result.Value);
+            Assert.Equal($"The requested pokemon - {pokemonName} is not found", result.Value);
+        }
+
+        [Fact]
+        public async Task TestGlobalExceptionHanlder()
+        {         
+            var httpContextMoq = new Mock<HttpContext>();
+            httpContextMoq.Setup(x => x.Response)
+                .Returns(new DefaultHttpContext().Response);
+          
+            var httpContext = httpContextMoq.Object;
+            httpContext.Response.Body = new MemoryStream();
+
+            var requestDelegate = new RequestDelegate(
+                    (innerContext) => throw new Exception("")
+            );
+
+            var middleware = new ErrorHandlerMiddleware(requestDelegate);
+            await middleware.InvokeAsync(httpContext);
+
+            httpContext.Response.Body.Seek(0, SeekOrigin.Begin);
+            var body = new StreamReader(httpContext.Response.Body).ReadToEnd();
+
+            Assert.Equal((int)HttpStatusCode.InternalServerError, httpContext.Response.StatusCode);
+            Assert.Equal("application/json", httpContext.Response.ContentType);
         }
     }
 }

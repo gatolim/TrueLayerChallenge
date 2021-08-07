@@ -33,7 +33,8 @@ namespace TrueLayerChallenge.Domain.QueryHandlers
                 }
                 else
                 {
-                    // throw custom exception with suggest solution and let API Global handler to handle those.
+                    // either log a warning or
+                    // log an error and throw custom exception with suggest solution and let API Global handler to handle those.
                 }
             }
 
@@ -56,7 +57,8 @@ namespace TrueLayerChallenge.Domain.QueryHandlers
                 }
                 else
                 {
-                    // throw custom exception with suggest solution and let API Global handler to handle those.
+                    // either log a warning or
+                    // log an error and throw custom exception with suggest solution and let API Global handler to handle those.
                 }
             }
 

@@ -31,7 +31,7 @@ namespace TrueLayerChallenge.WebApi.Controllers
             var domainResult = await _queryProcessor.ProcessQueryAsync<Domain.Queries.GetPokemonDetails, Domain.QueryModels.Pokemon>(query);
             if (domainResult == null)
             {
-                return NotFound(pokemonName);
+                return NotFound($"The requested pokemon - {pokemonName} is not found");
             }
 
             return Ok(new Pokemon()
@@ -44,7 +44,7 @@ namespace TrueLayerChallenge.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("translate/{pokemonName}")]
+        [Route("translated/{pokemonName}")]
         [MapToApiVersion("1.0")]
         public async Task<IActionResult> GetTranslatedPokemon_V1(string pokemonName)
         {
@@ -52,7 +52,7 @@ namespace TrueLayerChallenge.WebApi.Controllers
             var domainResult = await _queryProcessor.ProcessQueryAsync<Domain.Queries.GetPokemonTranslatedDetails, Domain.QueryModels.Pokemon>(query);
             if (domainResult == null)
             {
-                return NotFound(pokemonName);
+                return NotFound($"The requested pokemon - {pokemonName} is not found");
             }
 
             return Ok(new Pokemon()
