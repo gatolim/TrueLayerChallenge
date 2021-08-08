@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text;
@@ -18,12 +19,19 @@ namespace TrueLayerChallenge.Service.TranslationService
     {
         public HttpClient Client { get; }
         private ILogger _logger;
+        protected IDictionary<TranslationType, string> _translationTypeMapping;
 
         public TranslationService(HttpClient client, ILogger<TranslationService> logger)
         {
             Client = client;
             Client.BaseAddress = new Uri("https://api.funtranslations.com/");
             _logger = logger;
+
+            // Might want to move this to a configuration or something. 
+            _translationTypeMapping = new Dictionary<TranslationType, string>() { 
+                {TranslationType.Yoda, "translate/yoda.json" }, 
+                {TranslationType.Shakespeare , "translate/shakespeare.json" } }
+            ;
         }
 
         public async Task<HttpResultResponse<string>> GetTranslationAsync(string text, TranslationType type)
@@ -31,7 +39,12 @@ namespace TrueLayerChallenge.Service.TranslationService
             try
             {
                 var input = $"text={HttpUtility.UrlEncode(text)}";
-                string query = $"{GetTranslationEndpointByType(type)}?{input}";
+                string endpoint;
+                if (!_translationTypeMapping.TryGetValue(type, out endpoint))
+                {
+                    return HttpResultResponse<string>.Error("Translation was not found.");
+                }
+                string query = $"{endpoint}?{input}";
 
                 var jsonResponse = await Client.GetStringAsync(query);
 
@@ -54,25 +67,6 @@ namespace TrueLayerChallenge.Service.TranslationService
                 return HttpResultResponse<string>.Error($"{ex.Message}");
             }
 
-        }
-
-        protected string GetTranslationEndpointByType(TranslationType type)
-        {
-            string query = string.Empty;
-            switch (type)
-            {
-                case TranslationType.Yoda:
-                    query = $"translate/yoda.json";
-                    break;
-                case TranslationType.Shakespeare:
-                    query = $"translate/shakespeare.json";
-                    break;
-                default: 
-                    query = $"translate/shakespeare.json";
-                    break;
-            }
-
-            return query;
         }
     }
 }

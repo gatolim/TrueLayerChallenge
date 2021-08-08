@@ -44,7 +44,6 @@ namespace TrueLayerChallenge.Service.TranslationService.Test
             .Respond("application/json", mockShakespeareResponse); // Respond with JSON
 
 
-
             _httpClient = new HttpClient(mockHttp);
             _service = new TranslationService(_httpClient, logger.Object);
             HttpResultResponse<string> response = await _service.GetTranslationAsync(untranslatedText, type);
