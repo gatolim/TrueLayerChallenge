@@ -67,6 +67,39 @@ namespace TrueLayerChallenge.Service.PokemonService.Test
         }
 
         [Fact]
+        public async void TestInvalidResponseStructureFromApi()
+        {
+            // Mock test data 
+            string pokemonName = "testPokemon";
+            dynamic dynamicPokemon = new JObject() as dynamic;
+            dynamicPokemon.name = pokemonName;
+            dynamicPokemon.is_legendary = false;
+           
+            dynamicPokemon.flavor_text_entries = new JArray() as dynamic;
+
+            string mockPokemon = dynamicPokemon.ToString();
+
+            // Setup a respond for the user api (including a wildcard in the URL)
+            mockHttp.When($"https://pokeapi.co/api/v2/pokemon-species/{pokemonName}")
+            .Respond("application/json", mockPokemon); // Respond with JSON
+
+
+            _httpClient = new HttpClient(mockHttp);
+            _service = new PokemonService(_httpClient, logger.Object);
+            HttpResultResponse<Pokemon> response = await _service.GetPokemonDetailsAsync(pokemonName);
+
+            Assert.True(response.IsSucceed);
+
+            Pokemon pokemon = response.Data;
+
+            Assert.NotNull(pokemon);
+            Assert.Equal(pokemonName, pokemon.Name);
+            Assert.True(string.IsNullOrWhiteSpace(pokemon.Habitat));
+            Assert.False(pokemon.IsLegendary);
+            Assert.True(string.IsNullOrWhiteSpace(pokemon.StandardDescription));
+        }
+
+        [Fact]
         public async void TestNoResponseFromApi()
         {
             var pokemonName = "test";

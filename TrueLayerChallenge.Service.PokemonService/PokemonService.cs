@@ -50,12 +50,12 @@ namespace TrueLayerChallenge.Service.PokemonService
                 }
 
                 bool? isLegendary = json.is_legendary;
-                string habitat = json.habitat.name;
+                string habitat = json.habitat?.name;
                 string description = string.Empty;
 
                 foreach (dynamic flavor_text in json.flavor_text_entries)
                 {
-                    if (flavor_text.language.name == "en")
+                    if (flavor_text?.language?.name == "en")
                     {
                         description = Regex.Replace((string)flavor_text.flavor_text, @"\t|\n|\r|\f", " ");
                         break;
